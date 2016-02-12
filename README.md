@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/equivalent/file_organizer.svg?branch=master)](https://travis-ci.org/equivalent/file_organizer)
+
 # FileOrganizer
 
 Project under construction !!!
