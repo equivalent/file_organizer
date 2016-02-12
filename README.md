@@ -1,24 +1,18 @@
 # FileOrganizer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/file_organizer`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Project under construction !!!
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'file_organizer'
+gem 'file_organizer', github: 'equivalent/file_organizer'
 ```
 
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install file_organizer
 
 ## Usage
 
