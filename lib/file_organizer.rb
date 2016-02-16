@@ -1,5 +1,7 @@
 require 'file_organizer/version'
 require 'file_organizer/config'
+require 'file_organizer/set'
+require 'yaml'
 require 'pathname'
 
 module FileOrganizer

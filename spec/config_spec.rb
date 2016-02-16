@@ -9,6 +9,12 @@ RSpec.describe FileOrganizer::Config do
     FileOrganizer.config = @old_config
   end
 
+  describe '#template_folder' do
+    it  do
+      expect(subject.template_folder.to_s).to match('file_organizer/templates')
+    end
+  end
+
   describe '#root_path' do
     subject { FileOrganizer.config.root_path }
 
