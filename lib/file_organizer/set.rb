@@ -40,7 +40,7 @@ class Set
   end
 
   def upload_blacklist
-    %w(description.yml .file_orginizer_delete_ready .file_orginizer_lock)
+    %w(description.yml .file_organizer_lock)
   end
 
   def delete_ready
@@ -48,14 +48,22 @@ class Set
   end
 
   def upload_ready
-    desc_content.fetch('ready')
+    desc_content.fetch('ready') && !locked?
   end
 
-  def locked
-    File.exist?(guid_folder.join('.locked'))
+  def lock
+    FileUtils.touch lock_file
+  end
+
+  def locked?
+    File.exist?(lock_file)
   end
 
   private
+    def lock_file
+      guid_folder.join('.file_organizer_lock')
+    end
+
     def create_guid_folder
       FileUtils.mkdir(guid_folder)
     end

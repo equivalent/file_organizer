@@ -9,16 +9,20 @@ RSpec.describe Set do
       subject.guid = guid
     end
 
-    it 'should have set_type' do
-      # archive, photo
-      expect(subject.type).to eq 'archive'
+    context do
+      it { expect(subject.type).to eq 'archive' }
     end
 
-    it 'should have uploaded_at'
+    context do
+      let(:guid) { '6666upload_ready_123412341' }
+      it { expect(subject.type).to eq 'photo' }
+    end
+
+    xit 'should have uploaded_at'
 
     it 'should have guid' do
       expect(subject.guid).to be_kind_of String
-      expect(subject.guid.length).to eq 32
+      expect(subject.guid).to eq guid
     end
 
     describe '#files' do
@@ -38,6 +42,30 @@ RSpec.describe Set do
           expect(subject.files.last.basename.to_s).to eq 'image asset.jpg'
         end
       end
+
+      context do
+        let(:guid) { '777_locked_12345' }
+
+        it 'should have files' do
+          expect(subject.files).to be_kind_of Array
+          expect(subject.files.size).to be 1
+          expect(subject.files.last.basename.to_s).to eq 'hello-world.md'
+        end
+      end
+    end
+
+    describe '#locked?' do
+      it do
+        expect(subject.locked?).to be false
+      end
+
+      context do
+        let(:guid) { '777_locked_12345' }
+
+        it do
+          expect(subject.locked?).to be true
+        end
+      end
     end
 
     describe '#upload_ready' do
@@ -54,14 +82,21 @@ RSpec.describe Set do
           expect(subject.upload_ready).to be true
         end
       end
+
+      context 'when descripion.yml say yes but locked?' do
+        let(:guid) { '777_locked_12345' }
+
+        it do
+          expect(subject.upload_ready).to be false
+        end
+      end
     end
 
     describe '#upload_blacklist' do
       it do
         expect(subject.upload_blacklist).to eq([
           'description.yml',
-          '.file_orginizer_delete_ready',
-          '.file_orginizer_lock'
+          '.file_organizer_lock'
         ])
       end
     end
@@ -69,6 +104,11 @@ RSpec.describe Set do
     describe '#delete_ready' do
       it do
         expect(subject.delete_ready).to be false
+      end
+
+      context 'when descripion.yml say yes' do
+        let(:guid) { '6666upload_ready_123412341' }
+        it { expect(subject.delete_ready).to be false }
       end
     end
 
@@ -90,21 +130,22 @@ RSpec.describe Set do
       subject.prepare
     end
 
+    it 'should gennerate guid' do
+      expect(subject.guid).to be_kind_of String
+      expect(subject.guid.length).to eq 32
+    end
+
     it 'should create description.yml' do
       file = AppTest.tmp_test_root_path.join(subject.guid, 'description.yml')
       expect(File.exist?(file)).to be true
     end
+
+    describe '#locked?' do
+      it do
+        expect(subject.locked?).to eq false
+        subject.lock
+        expect(subject.locked?).to eq true
+      end
+    end
   end
-
-
-  context 'when ready description.yml changes to upload_ready=true' do
-    it 'should have upload ready true'
-    it 'should have delete ready false'
-  end
-
-  describe '#prepare set folder' do
-    it 'should create root_path/type/guid/ folder'
-    it 'should create description.yml'
-  end
-
 end
