@@ -1,6 +1,7 @@
 require 'file_organizer/version'
 require 'file_organizer/config'
 require 'file_organizer/set'
+require 'file_organizer/runner'
 require 'yaml'
 require 'pathname'
 
