@@ -11,7 +11,7 @@ RSpec.describe FileOrganizer::Config do
 
   describe '#template_folder' do
     it  do
-      expect(subject.template_folder.to_s).to match('file_organizer/templates')
+      expect(subject.template_folder.to_s).to match('file_organizer/template')
     end
   end
 

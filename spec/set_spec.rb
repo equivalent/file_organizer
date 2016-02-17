@@ -21,9 +21,23 @@ RSpec.describe Set do
       expect(subject.guid.length).to eq 32
     end
 
-    it 'should have files' do
-      expect(subject.files).to be_kind_of Array
-      expect(subject.files.size).to be 3
+    describe '#files' do
+      context do
+        it 'should have files' do
+          expect(subject.files).to be_kind_of Array
+          expect(subject.files.size).to be 3
+        end
+      end
+
+      context do
+        let(:guid) { '6666upload_ready_123412341' }
+
+        it 'should have files' do
+          expect(subject.files).to be_kind_of Array
+          expect(subject.files.size).to be 1
+          expect(subject.files.last.basename.to_s).to eq 'image asset.jpg'
+        end
+      end
     end
 
     describe '#upload_ready' do
