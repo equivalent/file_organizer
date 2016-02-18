@@ -8,12 +8,15 @@ class Runner
 
   def run
     detect_existing_sets
-    (sets_size - sets.size).times do
-      sets << prepare_set
-    end
+    prepare_extra_sets
+    starts_uploading
   end
 
   private
+    def starts_uploading
+      # todo
+    end
+
     def prepare_set
       Set.new
         .tap { |s| s.folder = folder }
@@ -22,5 +25,11 @@ class Runner
 
     def detect_existing_sets
       self.sets.concat(Set.detect_existing(folder))
+    end
+
+    def prepare_extra_sets
+      (sets_size - sets.size).times do
+        sets << prepare_set
+      end
     end
 end
