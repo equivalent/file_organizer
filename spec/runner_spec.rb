@@ -28,9 +28,6 @@ RSpec.describe Runner do
 
     context 'given 1 guid folder exist' do
       it 'should generate 2 guid folders' do
-        #FileUtils.touch(root_folder.join('should_ignore_files.txt'))
-        #FileUtils.mkdir(root_folder.join('should_ignore_folders_without_description'))
-
         FileUtils
           .mkdir(root_folder.join('should_not_ignore_this_folder'))
           .tap { |ary| FileUtils.touch(Pathname.new(ary.first).join('description.yml')) }

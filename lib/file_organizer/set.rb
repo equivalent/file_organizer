@@ -5,10 +5,13 @@ class Set
     Dir
       .glob(root_folder.join('*'))
       .map { |f| Pathname.new(f) }
-      .map do|path|
-        self.new.tap { |set| set.folder = path }
+      .map do |path|
+        self.new.tap do |set|
+          set.folder = root_folder
+          set.guid   = path.basename.to_s
+        end
       end
-      .select { }
+      .select { |set| set.valid? }
   end
 
   def files
@@ -49,12 +52,16 @@ class Set
     desc_content.fetch('description')
   end
 
+  def date
+    desc_content.fetch('date')
+  end
+
   def upload_blacklist
     %w(description.yml .file_organizer_lock)
   end
 
   def valid?
-    File.exist?(guid_folder.join('description.yml'))
+    File.exist?(description_file)
   end
 
   def delete_ready

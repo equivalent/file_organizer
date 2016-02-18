@@ -32,7 +32,11 @@ RSpec.describe Set do
       it { expect(subject.type).to eq 'photo' }
     end
 
-    xit 'should have uploaded_at'
+    describe "#date" do
+      it do
+        expect(subject.date).to eq Date.parse('2016-02-18')
+      end
+    end
 
     it 'should have guid' do
       expect(subject.guid).to be_kind_of String
