@@ -2,7 +2,13 @@ class Set
   attr_accessor :folder, :guid
 
   def self.detect_existing(root_folder)
-    []
+    Dir
+      .glob(root_folder.join('*'))
+      .map { |f| Pathname.new(f) }
+      .map do|path|
+        self.new.tap { |set| set.folder = path }
+      end
+      .select { }
   end
 
   def files
@@ -45,6 +51,10 @@ class Set
 
   def upload_blacklist
     %w(description.yml .file_organizer_lock)
+  end
+
+  def valid?
+    File.exist?(guid_folder.join('description.yml'))
   end
 
   def delete_ready

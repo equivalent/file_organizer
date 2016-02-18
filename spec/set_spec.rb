@@ -39,6 +39,18 @@ RSpec.describe Set do
       expect(subject.guid).to eq guid
     end
 
+    describe '#valid?' do
+      context 'if it has description.yml' do
+        it { expect(subject).to be_valid }
+      end
+
+      context "if it doesn't have description.yml" do
+        let(:guid) { 'not_valid_set_folder' }
+
+        it { expect(subject).not_to be_valid }
+      end
+    end
+
     describe '#files' do
       context do
         it 'should have files' do
