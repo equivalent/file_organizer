@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 RSpec.describe Set do
+  describe '.detect_existing' do
+    let(:root_folder) { AppTest.test_root_path }
+    subject { described_class.detect_existing(root_folder) }
+
+    it 'should locate sets' do
+      expect(subject.size).to be 3
+      expect(subject.map(&:guid)).to eq([
+        '6eaec6511eec985c9614d97d2d03252d',
+        '6666upload_ready_123412341',
+        '777_locked_12345'
+      ])
+    end
+  end
+
   context 'read' do
     let(:guid) { '6eaec6511eec985c9614d97d2d03252d' }
 

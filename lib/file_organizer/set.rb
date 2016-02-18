@@ -1,6 +1,10 @@
 class Set
   attr_accessor :folder, :guid
 
+  def self.detect_existing(root_folder)
+    []
+  end
+
   def files
     @files ||= Dir
       .glob(guid_folder.join('*'))
