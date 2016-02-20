@@ -1,4 +1,4 @@
-class Set
+class FileOrganizer::Set
   attr_accessor :folder, :guid
 
   def self.detect_existing(root_folder)
@@ -17,8 +17,8 @@ class Set
   def files
     @files ||= Dir
       .glob(guid_folder.join('*'))
-      .map { |file| Pathname.new(file) }
-      .select { |path| !(upload_blacklist).include?(path.basename.to_s) }
+      .map { |f| FileOrganizer::Document.new(f) }
+      .select { |d| d.qualify_for_upload? }
   end
 
   def prepare
@@ -54,10 +54,6 @@ class Set
 
   def date
     desc_content.fetch('date')
-  end
-
-  def upload_blacklist
-    %w(description.yml .file_organizer_lock)
   end
 
   def valid?

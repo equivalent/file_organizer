@@ -1,35 +1,41 @@
-class Runner
-  attr_reader :sets
-  attr_accessor :folder, :sets_size
+module FileOrganizer
+  class Runner
+    include FileOrganizer::Folder
 
-  def initialize
-    @sets = []
-  end
+    attr_reader :sets
+    attr_accessor :sets_size
 
-  def run
-    detect_existing_sets
-    prepare_extra_sets
-    starts_uploading
-  end
-
-  private
-    def starts_uploading
-      # todo
+    def initialize
+      @sets = []
     end
 
-    def prepare_set
-      Set.new
-        .tap { |s| s.folder = folder }
-        .tap { |s| s.prepare }
+    def run
+      detect_existing_sets
+      prepare_extra_sets
+      #starts_uploading
     end
 
-    def detect_existing_sets
-      self.sets.concat(Set.detect_existing(folder))
-    end
-
-    def prepare_extra_sets
-      (sets_size - sets.size).times do
-        sets << prepare_set
+    private
+      def starts_uploading
+        set = sets.first
+        set
+          UploadJob.perform_async()
       end
-    end
+
+      def prepare_set
+        Set.new
+          .tap { |s| s.folder = folder }
+          .tap { |s| s.prepare }
+      end
+
+      def detect_existing_sets
+        self.sets.concat(Set.detect_existing(folder))
+      end
+
+      def prepare_extra_sets
+        (sets_size - sets.size).times do
+          sets << prepare_set
+        end
+      end
+  end
 end

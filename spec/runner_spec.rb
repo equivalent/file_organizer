@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Runner do
+RSpec.describe FileOrganizer::Runner do
   def guid_folders_size
     Dir
       .glob(root_folder.join('*'))

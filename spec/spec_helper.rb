@@ -11,6 +11,10 @@ module AppTest
   def self.tmp_test_root_path
     Pathname.new(File.expand_path('../../tmp/test_root_path', __FILE__))
   end
+
+  def self.tmp_test_tracker_file
+    Pathname.new(File.expand_path('../../tmp/test/foobar.yml', __FILE__)).to_s
+  end
 end
 
 #FileOrganizer.config.root_file = AppTest.tmp_test_root_folder

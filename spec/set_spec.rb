@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Set do
+RSpec.describe FileOrganizer::Set do
   describe '.detect_existing' do
     let(:root_folder) { AppTest.test_root_path }
     subject { described_class.detect_existing(root_folder) }
@@ -119,15 +119,6 @@ RSpec.describe Set do
         it do
           expect(subject.upload_ready).to be false
         end
-      end
-    end
-
-    describe '#upload_blacklist' do
-      it do
-        expect(subject.upload_blacklist).to eq([
-          'description.yml',
-          '.file_organizer_lock'
-        ])
       end
     end
 
