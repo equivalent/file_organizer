@@ -15,12 +15,18 @@ module FileOrganizer
       private
         def copy_to_destination(document:, guid:)
           dfn = destination_filename(document: document, guid: guid)
-          FileUtils.cp(document.pathname, dfn)
+          begin
+            FileUtils.cp(document.pathname, dfn)
+            # success
+          rescue Errno::ENOENT => e
+            raise e
+            # error e
+          end
         end
 
         def destination_filename(guid:, document:)
           destination_guid_folder(guid:guid)
-            .join(document.pathname)
+            .join(sanitize(document.pathname.basename))
         end
 
         def prepare_destination(guid:)
@@ -31,6 +37,10 @@ module FileOrganizer
           Pathname
             .new(destination)
             .join(guid)
+        end
+
+        def sanitize(name)
+          name.to_s.gsub(/[^0-9A-Za-z.\-_]/,'')
         end
     end
   end

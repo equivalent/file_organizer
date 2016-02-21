@@ -16,8 +16,8 @@ module AppTest
     Pathname.new(File.expand_path('../../tmp/test/foobar.yml', __FILE__)).to_s
   end
 
-  def self.tmp_test_upload_folder
-    Pathname.new(File.expand_path('../../tmp/test_upload/', __FILE__)).to_s
+  def self.tmp_test_upload_folder_path
+    Pathname.new(File.expand_path('../../tmp/test_upload/', __FILE__))
   end
 end
 
@@ -26,11 +26,11 @@ end
 RSpec.configure do |config|
   config.before(:each) do
     FileUtils.mkdir_p(AppTest.tmp_test_root_path)
-    FileUtils.mkdir_p(AppTest.tmp_test_upload_folder)
+    FileUtils.mkdir_p(AppTest.tmp_test_upload_folder_path)
   end
 
   config.after(:each) do
     FileUtils.rm_r Dir.glob(AppTest.tmp_test_root_path)
-    FileUtils.rm_r AppTest.tmp_test_upload_folder
+    FileUtils.rm_r AppTest.tmp_test_upload_folder_path
   end
 end
