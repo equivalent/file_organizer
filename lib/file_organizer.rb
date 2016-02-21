@@ -1,5 +1,4 @@
 require 'yaml'
-require 'yaml/store'
 require 'pathname'
 require 'forwardable'
 
