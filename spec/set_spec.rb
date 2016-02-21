@@ -59,7 +59,7 @@ RSpec.describe FileOrganizer::Set do
       context do
         it 'should have files' do
           expect(subject.files).to be_kind_of Array
-          expect(subject.files.size).to be 3
+          expect(subject.files.size).to be 5
         end
       end
 

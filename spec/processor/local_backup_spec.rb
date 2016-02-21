@@ -49,6 +49,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
         expect(tracker1)
           .to have_received(:track)
           .with({
+            processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
             origin_path: document.pathname,
             destination_path: Pathname.new(destination_file),
@@ -59,6 +60,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
         expect(tracker2)
           .to have_received(:track)
           .with({
+            processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
             origin_path: document.pathname,
             destination_path: Pathname.new(destination_file),
@@ -161,6 +163,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
         expect(tracker1)
           .to have_received(:track)
           .with({
+            processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
             origin_path: document.pathname,
             destination_path: Pathname.new(destination_file),
@@ -171,6 +174,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
         expect(tracker2)
           .to have_received(:track)
           .with({
+            processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
             origin_path: document.pathname,
             destination_path: Pathname.new(destination_file),

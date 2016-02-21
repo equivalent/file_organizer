@@ -26,6 +26,7 @@ module FileOrganizer
           end
 
           notify_trackers({
+            processor: self.class.to_s,
             guid: guid,
             origin_path: document.pathname,
             destination_path: dfn,

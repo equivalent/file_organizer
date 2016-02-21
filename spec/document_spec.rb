@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe FileOrganizer::Document do
   let(:guid_folder) { AppTest.test_root_path.join('777_locked_12345')  }
-  subject(:document) { described_class.new(raw_file) }
+  subject(:document) { described_class.new(raw_file: raw_file, guid: '777_locked_12345') }
 
   describe '.upload_blacklist' do
     it do
