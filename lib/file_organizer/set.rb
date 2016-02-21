@@ -17,7 +17,9 @@ class FileOrganizer::Set
   def files
     @files ||= Dir
       .glob(guid_folder.join('*'))
-      .map { |f| FileOrganizer::Document.new(f) }
+      .map do |f|
+        FileOrganizer::Document.new(raw_file:f, guid: guid)
+      end
       .select { |d| d.qualify_for_upload? }
   end
 

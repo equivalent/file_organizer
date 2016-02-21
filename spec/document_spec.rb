@@ -15,24 +15,24 @@ RSpec.describe FileOrganizer::Document do
 
   describe '#qualify_for_upload?' do
     context 'given description.yml' do
-      let(:raw_file) { guid_folder.join('description.yml') }
+      let(:raw_file) { guid_folder.join('description.yml').to_s }
       it { expect(subject.qualify_for_upload?).to be false }
     end
 
     context 'given regular file' do
-      let(:raw_file) { guid_folder.join('hello-world.md') }
+      let(:raw_file) { guid_folder.join('hello-world.md').to_s }
       it { expect(subject.qualify_for_upload?).to be true }
     end
 
     context 'given .file_organizer_lock' do
-      let(:raw_file) { guid_folder.join('.file_organizer_lock') }
+      let(:raw_file) { guid_folder.join('.file_organizer_lock').to_s }
       it { expect(subject.qualify_for_upload?).to be false }
     end
   end
 
   describe '#process' do
     context 'given regular file' do
-      let(:raw_file) { guid_folder.join('hello-world.md') }
+      let(:raw_file) { guid_folder.join('hello-world.md').to_s }
       let(:dummy_processor1) { spy }
       let(:dummy_processor2) { spy }
 
@@ -48,6 +48,15 @@ RSpec.describe FileOrganizer::Document do
         expect(dummy_processor1).to have_received(:process)
         expect(dummy_processor2).to have_received(:process)
       end
+    end
+  end
+
+  describe '#pathname' do
+    let(:raw_file) { guid_folder.join('hello-world.md').to_s }
+
+    it do
+      expect(subject.pathname).to be_kind_of(Pathname)
+      expect(subject.pathname).to eq guid_folder.join('hello-world.md')
     end
   end
 end

@@ -15,6 +15,10 @@ module AppTest
   def self.tmp_test_tracker_file
     Pathname.new(File.expand_path('../../tmp/test/foobar.yml', __FILE__)).to_s
   end
+
+  def self.tmp_test_upload_folder
+    Pathname.new(File.expand_path('../../tmp/test_upload/', __FILE__)).to_s
+  end
 end
 
 #FileOrganizer.config.root_file = AppTest.tmp_test_root_folder
@@ -22,9 +26,11 @@ end
 RSpec.configure do |config|
   config.before(:each) do
     FileUtils.mkdir_p(AppTest.tmp_test_root_path)
+    FileUtils.mkdir_p(AppTest.tmp_test_upload_folder)
   end
 
   config.after(:each) do
     FileUtils.rm_r Dir.glob(AppTest.tmp_test_root_path)
+    FileUtils.rm_r AppTest.tmp_test_upload_folder
   end
 end
