@@ -45,6 +45,7 @@ module FileOrganizer
           FileUtils.mkdir_p(destination_guid_folder(guid: guid))
         end
 
+        # modularrize
         def destination_guid_folder(guid:)
           Pathname
             .new(destination)
