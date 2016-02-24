@@ -1,6 +1,8 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'file_organizer'
 require 'fileutils'
+
+require File.expand_path('../support/processor_helper', __FILE__)
 #require 'secure_random'
 
 module AppTest
@@ -24,6 +26,8 @@ end
 #FileOrganizer.config.root_file = AppTest.tmp_test_root_folder
 
 RSpec.configure do |config|
+  config.filter_run_excluding :real_http => true
+
   config.before(:each) do
     FileUtils.mkdir_p(AppTest.tmp_test_root_path)
     FileUtils.mkdir_p(AppTest.tmp_test_upload_folder_path)

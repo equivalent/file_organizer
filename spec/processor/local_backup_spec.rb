@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe FileOrganizer::Processor::LocalBackup do
+  include FileOrganizer::AppTest::ProcessorHelper
+
   def destination_files
     Dir.glob(destination.join('*/**/*')) # all inside guid folder (similar to */** but
                                          # without guid_folder in list)
-  end
-
-  def trigger
-    processor.process(document: document, guid: guid)
   end
 
   let(:processor) { described_class.new(destination: destination) }

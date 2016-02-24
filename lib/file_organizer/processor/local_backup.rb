@@ -45,13 +45,13 @@ module FileOrganizer
           FileUtils.mkdir_p(destination_guid_folder(guid: guid))
         end
 
-        # modularrize
         def destination_guid_folder(guid:)
           Pathname
             .new(destination)
             .join(guid)
         end
 
+        # modularrize
         def sanitize(name)
           name.to_s.gsub(/[^0-9A-Za-z.\-_]/,'')
         end
