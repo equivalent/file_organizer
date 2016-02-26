@@ -3,11 +3,11 @@ require 'aws-sdk'
 RSpec.describe FileOrganizer::Processor::S3Backup do
   include FileOrganizer::AppTest::ProcessorHelper #trigger
 
-  let(:bucket_name)      { 'my-bucket' }
-  let(:guid)             { '6eaec6511eec985c9614d97d2d03252d' }
-  let(:source_file_path) { AppTest.test_root_path.join(guid, %q{wierd#'ame.xyz.txt}) }
-  let(:document)         { instance_double(FileOrganizer::Document, pathname: source_file_path) }
-  let(:processor)        { described_class.new(bucket: bucket_name) }
+  let(:type)        { 'archive' }
+  let(:bucket_name) { 'my-bucket' }
+  let(:guid)        { '6eaec6511eec985c9614d97d2d03252d' }
+  let(:source_path) { AppTest.test_root_path.join(guid, %q{wierd#'ame.xyz.txt}) }
+  let(:processor)   { described_class.new(bucket: bucket_name) }
 
   before do
     Aws.config[:stub_responses] = true
@@ -33,7 +33,7 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
 
     expect(s3_object_resource)
       .to receive(:upload_file)
-      .with(source_file_path.to_s)
+      .with(source_path.to_s)
 
     trigger
   end

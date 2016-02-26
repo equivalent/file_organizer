@@ -2,16 +2,17 @@ module FileOrganizer
   class Document
     extend Forwardable
 
-    attr_reader :guid
+    attr_reader :set
     def_delegator :pathname, :basename
+    def_delegators :set, :guid, :type
 
     def self.upload_blacklist
       %w(description.yml .file_organizer_lock)
     end
 
-    def initialize(raw_file:, guid:)
+    def initialize(raw_file:, set:)
       @raw_file = raw_file
-      @guid     = guid
+      @set      = set
     end
 
     def pathname
@@ -24,7 +25,7 @@ module FileOrganizer
 
     def process
       processors.each do |u|
-        u.process(document: self, guid: guid)
+        u.process(source_path: pathname, guid: guid, type: type)
       end
     end
 

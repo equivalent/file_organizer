@@ -10,9 +10,9 @@ module FileOrganizer
         @trackers = trackers
       end
 
-      def process(document:, guid:, type: 'archive')
+      def process(source_path:, guid:, type:, **other_options)
         begin
-          destination_name = destination(type, guid, document.pathname)
+          destination_name = destination(type, guid, source_path)
 
           sanitized_name = FileOrganizer::Processor::HelperObject::UniqueName
             .new(existence_determiner: S3FileExistanceDeterminer.new(bucket_resource: bucket_resource) )

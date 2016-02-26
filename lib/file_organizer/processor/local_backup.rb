@@ -8,16 +8,16 @@ module FileOrganizer
         @trackers = trackers
       end
 
-      def process(document:, guid:)
+      def process(source_path:, guid:, type:, **other_options)
         prepare_destination(guid: guid)
-        copy_to_destination(document: document, guid: guid)
+        copy_to_destination(source_path: source_path, guid: guid)
       end
 
       private
-        def copy_to_destination(document:, guid:)
-          dfn = destination_path(document: document, guid: guid)
+        def copy_to_destination(source_path:, guid:)
+          dfn = destination_path(source_path: source_path, guid: guid)
           begin
-            FileUtils.cp(document.pathname, dfn)
+            FileUtils.cp(source_path, dfn)
             status = 'success'
             message = nil
           rescue Errno::ENOENT => e
@@ -28,19 +28,19 @@ module FileOrganizer
           notify_trackers({
             processor: self.class.to_s,
             guid: guid,
-            origin_path: document.pathname,
+            origin_path: source_path,
             destination_path: dfn,
             status: status,
             message: message
           })
         end
 
-        def destination_path(guid:, document:)
+        def destination_path(guid:, source_path:)
           guid_path = destination_guid_folder(guid:guid)
 
           sanitized_name = FileOrganizer::Processor::HelperObject::UniqueName
             .new(existence_determiner: LocalFileExistanceDeterminer.new(guid_path: guid_path) )
-            .sanitize(document.pathname.basename)
+            .sanitize(source_path.basename)
 
           guid_path.join(sanitized_name)
 

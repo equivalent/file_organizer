@@ -8,9 +8,11 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
                                          # without guid_folder in list)
   end
 
+  let(:type)             { 'archive' }
   let(:processor) { described_class.new(destination: destination) }
   let(:destination) { AppTest.tmp_test_upload_folder_path }
   let(:guid) { '6eaec6511eec985c9614d97d2d03252d' }
+  let(:source_guid_path) { AppTest.test_root_path.join(guid) }
 
   let(:tracker1) { spy }
   let(:tracker2) { spy }
@@ -22,11 +24,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
 
   describe '#process' do
     context 'when file with special chars in name' do
-      let(:document) do
-        path = AppTest.test_root_path.join(guid, %q{wierd#'ame.xyz.txt})
-        double(pathname: path)
-      end
-
+      let(:source_path) { source_guid_path.join("wierd#'ame.xyz.txt") }
       let(:destination_file) do
         Pathname
           .new(destination)
@@ -49,7 +47,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
           .with({
             processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
-            origin_path: document.pathname,
+            origin_path: source_path,
             destination_path: Pathname.new(destination_file),
             status: 'success',
             message: nil
@@ -60,7 +58,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
           .with({
             processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
-            origin_path: document.pathname,
+            origin_path: source_path,
             destination_path: Pathname.new(destination_file),
             status: 'success',
             message: nil
@@ -69,11 +67,13 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
     end
 
     context 'when file nested in a folder' do
-      let(:document) do
-        path = AppTest.test_root_path.join(guid, 'folder', 'folder', 'hello world .txt')
-        double(pathname: path)
+      let(:guid) { '6eaec6511eec985c9614d97d2d03252d' }
+      let(:source_path) do
+        source_guid_path
+          .join('folder')
+          .join('folder')
+          .join('hello world .txt')
       end
-
       let(:destination_file) do
         Pathname
           .new(destination)
@@ -90,11 +90,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
     end
 
     context 'when file with same name exist already' do
-      let(:document) do
-        path = AppTest.test_root_path.join(guid, 'blabla.txt')
-        double(pathname: path)
-      end
-
+      let(:source_path) { source_guid_path.join('blabla.txt') }
       let(:destination_file) do
         Pathname
           .new(destination)
@@ -131,11 +127,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
     end
 
     context 'there was error' do
-      let(:document) do
-        path = AppTest.test_root_path.join(guid, 'blabla.txt')
-        double(pathname: path)
-      end
-
+      let(:source_path) { source_guid_path.join('blabla.txt') }
       let(:destination_file) do
         Pathname
           .new(destination)
@@ -163,7 +155,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
           .with({
             processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
-            origin_path: document.pathname,
+            origin_path: source_path,
             destination_path: Pathname.new(destination_file),
             status: 'error',
             message: 'Errno::ENOENT: No such file or directory'
@@ -174,7 +166,7 @@ RSpec.describe FileOrganizer::Processor::LocalBackup do
           .with({
             processor: described_class.to_s,
             guid: '6eaec6511eec985c9614d97d2d03252d',
-            origin_path: document.pathname,
+            origin_path: source_path,
             destination_path: Pathname.new(destination_file),
             status: 'error',
             message: 'Errno::ENOENT: No such file or directory'
