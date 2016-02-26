@@ -5,7 +5,7 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
 
   let(:bucket_name)      { 'my-bucket' }
   let(:guid)             { '6eaec6511eec985c9614d97d2d03252d' }
-  let(:source_file_path) { AppTest.test_root_path.join(guid, %q{ wierd#'ame.xyz.txt}) }
+  let(:source_file_path) { AppTest.test_root_path.join(guid, %q{wierd#'ame.xyz.txt}) }
   let(:document)         { instance_double(FileOrganizer::Document, pathname: source_file_path) }
   let(:processor)        { described_class.new(bucket: bucket_name) }
 
@@ -28,6 +28,10 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
       .and_return(s3_object_resource)
 
     expect(s3_object_resource)
+      .to receive(:exists?)
+      .and_return(false)
+
+    expect(s3_object_resource)
       .to receive(:upload_file)
       .with(source_file_path.to_s)
 
@@ -36,24 +40,23 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
 
 
   describe 'real connection smoke test upload', real_http: true do
+
+    let(:secrets)     { YAML.load_file(FileOrganizer.config.project_root.join('secrets.yml')) }
+    let(:id)          { secrets.fetch('aws').fetch('access_key_id') }
+    let(:key)         { secrets.fetch('aws').fetch('secret_access_key') }
+    let(:region)      { secrets.fetch('aws').fetch('region') }
+    let(:bucket_name) { secrets.fetch('aws').fetch('bucket') }
+
     before do
-      secrets = YAML.load(FileOrganizer.root_path.join('secrets.yml'))
-
-      id  = secrets.fetch('aws').fetch('access_key_id')
-      key = secrets.fetch('aws').fetch('secret_access_key')
-      region = secrets.fetch('aws').fetch('region')
-      bucket = secrets.fetch('aws').fetch('bucket')
-
       Aws.config.update({
         region: region,
-        credentials: Aws::Credentials.new(id, key)
+        credentials: Aws::Credentials.new(id, key),
+        stub_responses: false
       })
 
-      FileOrganizer::Processor::S3Backup.new(bucket: bucket)
     end
 
-    xit do
-      # upload to s3 depending on your secrets.yml
+    it do
       trigger
     end
   end

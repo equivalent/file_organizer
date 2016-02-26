@@ -11,6 +11,10 @@ require 'file_organizer/runner'
 require 'file_organizer/jobs/upload_job'
 
 Dir
+  .glob("#{File.dirname(__FILE__)}/file_organizer/processor/helper_object/*.rb")
+  .each { |file| require file }
+
+Dir
   .glob("#{File.dirname(__FILE__)}/file_organizer/processor/*.rb")
   .each { |file| require file }
 

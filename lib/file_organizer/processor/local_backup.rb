@@ -36,9 +36,27 @@ module FileOrganizer
         end
 
         def destination_path(guid:, document:)
-          sanitized_name = sanitize(document.pathname.basename)
           guid_path = destination_guid_folder(guid:guid)
-          non_duplicate_path(name: sanitized_name, guid_path: guid_path)
+
+          sanitized_name = FileOrganizer::Processor::HelperObject::UniqueName
+            .new(existence_determiner: LocalFileExistanceDeterminer.new(guid_path: guid_path) )
+            .sanitize(document.pathname.basename)
+
+          guid_path.join(sanitized_name)
+
+          #non_duplicate_path(name: sanitized_name, guid_path: guid_path)
+        end
+
+        class LocalFileExistanceDeterminer
+          attr_reader :guid_path
+
+          def initialize(guid_path:)
+            @guid_path = guid_path
+          end
+
+          def call(name)
+            File.exist?(guid_path.join(name))
+          end
         end
 
         def prepare_destination(guid:)
@@ -51,29 +69,24 @@ module FileOrganizer
             .join(guid)
         end
 
-        # modularrize
-        def sanitize(name)
-          name.to_s.gsub(/[^0-9A-Za-z.\-_]/,'')
-        end
+        #def generate_name(name:, suffix: )
+          #pathname = Pathname.new(name)
+          #pathname.sub_ext('').to_s + "-#{suffix.to_i}" + pathname.extname.to_s
+        #end
 
-        def generate_name(name:, suffix: )
-          pathname = Pathname.new(name)
-          pathname.sub_ext('').to_s + "-#{suffix.to_i}" + pathname.extname.to_s
-        end
+        #def non_duplicate_path(name:, guid_path:, suffix: nil)
+          #if suffix
+            #file_path = guid_path.join(generate_name(name: name, suffix: suffix))
+          #else
+            #file_path = guid_path.join(name)
+          #end
 
-        def non_duplicate_path(name:, guid_path:, suffix: nil)
-          if suffix
-            file_path = guid_path.join(generate_name(name: name, suffix: suffix))
-          else
-            file_path = guid_path.join(name)
-          end
-
-          if File.exist?(file_path)
-            non_duplicate_path(name: name, guid_path: guid_path, suffix: suffix.to_i + 1)
-          else
-            file_path
-          end
-        end
+          #if File.exist?(file_path)
+            #non_duplicate_path(name: name, guid_path: guid_path, suffix: suffix.to_i + 1)
+          #else
+            #file_path
+          #end
+        #end
 
         def notify_trackers(*args)
           trackers.each do |tracker|

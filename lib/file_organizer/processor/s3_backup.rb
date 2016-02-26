@@ -11,24 +11,48 @@ module FileOrganizer
       end
 
       def process(document:, guid:, type: 'archive')
-        #type = 'aaa'
-        #"#{type}/#{guid}/#{document}"
+        begin
+          destination_name = destination(type, guid, document.pathname)
 
-        bucket_resource
-          .object(destination(type, guid, document.pathname))
-          .upload_file(document.pathname.to_s)
+          sanitized_name = FileOrganizer::Processor::HelperObject::UniqueName
+            .new(existence_determiner: S3FileExistanceDeterminer.new(bucket_resource: bucket_resource) )
+            .sanitize(destination_name)
 
-        #bbb = destination_guid_folder(guid: guid).join('blaaa')
+          bucket_object(destination_name).upload_file(sanitized_name)
+        rescue Seahorse::Client::NetworkingError
+          puts "retrying"
+          sleep 10
+          retry
+        end
+      end
+
+      class S3FileExistanceDeterminer
+        attr_reader :bucket_resource
+
+        def initialize(bucket_resource:)
+          @bucket_resource = bucket_resource
+        end
+
+        def call(location)
+          bucket_resource.object(location).exists?
+        end
       end
 
       private
 
-      # modularrize
-      def destination(type, guid, origin_path)
-        "#{type}/#{guid}/#{sanitize(origin_path.basename)}"
-      end
+        def existance_determiner
 
-      private
+        end
+
+        def bucket_object(location)
+          bucket_resource.object(location)
+        end
+
+        # modularrize
+        def destination(type, guid, origin_path)
+          "#{type}/#{guid}/#{sanitize(origin_path.basename)}"
+        end
+
         def bucket_resource
           @bucket_resource = Aws::S3::Bucket.new(bucket)
         end
