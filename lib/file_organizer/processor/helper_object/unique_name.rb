@@ -14,7 +14,7 @@ module FileOrganizer
 
         private
           def sanitized_name(name)
-            name.to_s.gsub(/[^0-9A-Za-z.\-_]/,'')
+            name.to_s.gsub(/[^0-9A-Za-z.\-_\/]/,'')
           end
 
           def non_duplicate_name(name, suffix: nil)

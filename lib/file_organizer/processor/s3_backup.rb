@@ -54,7 +54,7 @@ module FileOrganizer
         end
 
         def bucket_resource
-          @bucket_resource = Aws::S3::Bucket.new(bucket)
+          @bucket_resource ||= Aws::S3::Bucket.new(bucket)
         end
 
         def sanitize(name)

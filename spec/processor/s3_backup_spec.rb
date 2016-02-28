@@ -19,12 +19,13 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
 
     expect(Aws::S3::Bucket)
       .to receive(:new)
-      .with(bucket_name)
+      .with("my-bucket")
       .and_return(bucket_resource)
 
     expect(bucket_resource)
       .to receive(:object)
       .with('archive/6eaec6511eec985c9614d97d2d03252d/wierdame.xyz.txt')
+      .twice
       .and_return(s3_object_resource)
 
     expect(s3_object_resource)
@@ -33,14 +34,50 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
 
     expect(s3_object_resource)
       .to receive(:upload_file)
-      .with(source_path.to_s)
+      .with("archive/6eaec6511eec985c9614d97d2d03252d/wierdame.xyz.txt")
 
     trigger
   end
 
+  context 'item with same name exist in s3' do
+    it 'should upload the file to s3' do
+      bucket_resource = instance_double(Aws::S3::Bucket)
+      s3_object_resource = instance_double(Aws::S3::Object)
+      s3_object_resource2 = instance_double(Aws::S3::Object)
+
+      expect(Aws::S3::Bucket)
+        .to receive(:new)
+        .with("my-bucket")
+        .and_return(bucket_resource)
+
+      expect(bucket_resource)
+        .to receive(:object)
+        .with('archive/6eaec6511eec985c9614d97d2d03252d/wierdame.xyz.txt')
+        .twice
+        .and_return(s3_object_resource)
+
+      expect(s3_object_resource)
+        .to receive(:exists?)
+        .and_return(true)
+
+      expect(bucket_resource)
+        .to receive(:object)
+        .with('archive/6eaec6511eec985c9614d97d2d03252d/wierdame.xyz-1.txt')
+        .and_return(s3_object_resource2)
+
+      expect(s3_object_resource2)
+        .to receive(:exists?)
+        .and_return(false)
+
+      expect(s3_object_resource)
+        .to receive(:upload_file)
+        .with("archive/6eaec6511eec985c9614d97d2d03252d/wierdame.xyz-1.txt")
+
+      trigger
+    end
+  end
 
   describe 'real connection smoke test upload', real_http: true do
-
     let(:secrets)     { YAML.load_file(FileOrganizer.config.project_root.join('secrets.yml')) }
     let(:id)          { secrets.fetch('aws').fetch('access_key_id') }
     let(:key)         { secrets.fetch('aws').fetch('secret_access_key') }
@@ -53,7 +90,6 @@ RSpec.describe FileOrganizer::Processor::S3Backup do
         credentials: Aws::Credentials.new(id, key),
         stub_responses: false
       })
-
     end
 
     it do
