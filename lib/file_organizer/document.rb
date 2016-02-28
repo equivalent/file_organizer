@@ -7,7 +7,7 @@ module FileOrganizer
     def_delegators :set, :guid, :type
 
     def self.upload_blacklist
-      %w(description.yml .file_organizer_lock)
+      %w(.file_organizer_lock)
     end
 
     def initialize(raw_file:, set:)
@@ -17,6 +17,10 @@ module FileOrganizer
 
     def pathname
       Pathname.new(raw_file)
+    end
+
+    def is_description_file
+      pathname.basename.to_s == 'description.yml'
     end
 
     def qualify_for_upload?

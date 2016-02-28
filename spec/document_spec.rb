@@ -8,7 +8,6 @@ RSpec.describe FileOrganizer::Document do
   describe '.upload_blacklist' do
     it do
       expect(described_class.upload_blacklist).to eq([
-        'description.yml',
         '.file_organizer_lock'
       ])
     end
@@ -17,7 +16,7 @@ RSpec.describe FileOrganizer::Document do
   describe '#qualify_for_upload?' do
     context 'given description.yml' do
       let(:raw_file) { guid_folder.join('description.yml').to_s }
-      it { expect(subject.qualify_for_upload?).to be false }
+      it { expect(subject.qualify_for_upload?).to be true }
     end
 
     context 'given regular file' do
@@ -58,6 +57,18 @@ RSpec.describe FileOrganizer::Document do
     it do
       expect(subject.pathname).to be_kind_of(Pathname)
       expect(subject.pathname).to eq guid_folder.join('hello-world.md')
+    end
+  end
+
+  describe '#is_description_file' do
+    context 'when non description file' do
+      let(:raw_file) { guid_folder.join('hello-world.md').to_s }
+      it { expect(subject.is_description_file).to be false }
+    end
+
+    context 'when description file' do
+      let(:raw_file) { guid_folder.join('description.yml').to_s }
+      it { expect(subject.is_description_file).to be true }
     end
   end
 end

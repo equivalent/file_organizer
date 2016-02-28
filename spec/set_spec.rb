@@ -59,7 +59,7 @@ RSpec.describe FileOrganizer::Set do
       context do
         it 'should have files' do
           expect(subject.files).to be_kind_of Array
-          expect(subject.files.size).to be 5
+          expect(subject.files.size).to be 6
         end
       end
 
@@ -68,7 +68,7 @@ RSpec.describe FileOrganizer::Set do
 
         it 'should have files' do
           expect(subject.files).to be_kind_of Array
-          expect(subject.files.size).to be 1
+          expect(subject.files.size).to be 2
           expect(subject.files.last.basename.to_s).to eq 'image asset.jpg'
         end
       end
@@ -78,8 +78,15 @@ RSpec.describe FileOrganizer::Set do
 
         it 'should have files' do
           expect(subject.files).to be_kind_of Array
-          expect(subject.files.size).to be 1
+          expect(subject.files.size).to be 2
+        end
+
+        it do
           expect(subject.files.last.basename.to_s).to eq 'hello-world.md'
+        end
+
+        it do
+          expect(subject.files.first.basename.to_s).to eq 'description.yml'
         end
       end
     end

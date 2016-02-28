@@ -20,7 +20,8 @@ class FileOrganizer::Set
       .map do |f|
         FileOrganizer::Document.new(raw_file:f, set: self)
       end
-      .select { |d| d.qualify_for_upload? }
+      .select  { |d| d.qualify_for_upload? }
+      .sort_by { |d, x| [(d.is_description_file ? 0 : 1), x] }
   end
 
   def prepare
